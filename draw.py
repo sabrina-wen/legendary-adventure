@@ -4,10 +4,17 @@ from math import *
 from gmath import *
 
 def scanline_convert(polygons, i, screen, zbuffer ):
-    for triangle in polygons:
-        yt =
-        yn =
-        draw_line(x0, y0, yz, screen, zbuffer, color)
+    for i in polygons:-
+        color[0] = random.randint(0, 255)
+        color[1] = random.randint(0, 255)
+        color[2] = random.randint(0, 255)
+        yt = yb
+        draw_line(x1, yb, yz, screen, zbuffer, color)
+        draw_line = 
+        delta1 = 0
+        if (yt - ym == 0):
+            delta1 = float(xm - xb) / float(ym - yb)
+        x1 += delta1
         
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
