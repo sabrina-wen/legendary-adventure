@@ -4,18 +4,41 @@ from math import *
 from gmath import *
 
 def scanline_convert(polygons, i, screen, zbuffer ):
-    for i in polygons:-
+    print polygons[0]
+    for i in polygons:
+        # calculate rand color
         color[0] = random.randint(0, 255)
         color[1] = random.randint(0, 255)
         color[2] = random.randint(0, 255)
+
+        # define points
+        # bottom
+        x0 = polygons[0][0]
+        y0 = polygons[0][1]
+        z0 = polygons[0][2]
+
+        # middle
+        x1 = polygons[1][0]
+        y1 = polygons[1][1]
+        z1 = polygons[1][2]
+
+        # top
+        x2 = polygons[2][0]
+        y2 = polygons[2][1]
+        z2 = polygons[2][2]
+
+        # order coordinates from bottom to top
+        # calculate slopes
+        # draw lines based on ycor
+        # update x and z
         yt = yb
         draw_line(x1, yb, yz, screen, zbuffer, color)
-        draw_line = 
+        #draw_line =
         delta1 = 0
         if (yt - ym == 0):
             delta1 = float(xm - xb) / float(ym - yb)
         x1 += delta1
-        
+
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(polygons, x0, y0, z0);
@@ -55,6 +78,7 @@ def draw_polygons( matrix, screen, zbuffer, color ):
                        matrix[point+2][2],
                        screen, zbuffer, color)
         point+= 3
+        scanline_convert(matrix, i, screen, zbuffer)
 
 
 def add_box( polygons, x, y, z, width, height, depth ):
