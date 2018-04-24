@@ -13,32 +13,64 @@ def scanline_convert(polygons, i, screen, zbuffer ):
 
         # define points
         # bottom
-        x0 = polygons[0][0]
-        y0 = polygons[0][1]
-        z0 = polygons[0][2]
+        xb = polygons[0][0]
+        yb = polygons[0][1]
+        zb = polygons[0][2]
 
         # middle
-        x1 = polygons[1][0]
-        y1 = polygons[1][1]
-        z1 = polygons[1][2]
+        xm = polygons[1][0]
+        ym = polygons[1][1]
+        zm = polygons[1][2]
 
         # top
-        x2 = polygons[2][0]
-        y2 = polygons[2][1]
-        z2 = polygons[2][2]
+        xt = polygons[2][0]
+        yt = polygons[2][1]
+        zt = polygons[2][2]
 
         # order coordinates from bottom to top
+        if (yb > yt):
+            tempx = xb
+            tempy = yb
+            tempz = zb
+            xb = xt
+            yb = yt
+            zb = zt
+            xt = tempx
+            yt = tempy
+            zt = tempz
+        if (yb > ym):
+            tempx = xb
+            tempy = yb
+            tempz = zb
+            xb = xm
+            yb = ym
+            zb = zm
+            xm = tempx
+            ym = tempy
+            zm = tempz
+        if (ym > yt):
+            tempx = xm
+            tempy = ym
+            tempz = zm
+            xm = xt
+            ym = yt
+            zm = zt
+            xt = tempx
+            yt = tempy
+            zt = tempz
+        
         # calculate slopes
-        # draw lines based on ycor
+        if (xm - xb == 0):
+            d0 = float(xt - xb) / float(yt - yb)
+        y = yb
+        x0 = xb
+        x1 = xt
+        while (y < yt:
+            y += 1
+            x0 += d0
         # update x and z
-        yt = yb
-        draw_line(x1, yb, yz, screen, zbuffer, color)
-        #draw_line =
-        delta1 = 0
-        if (yt - ym == 0):
-            delta1 = float(xm - xb) / float(ym - yb)
-        x1 += delta1
-
+        # draw_line(x1, yb, yz, screen, zbuffer, color)
+        # draw_line =
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(polygons, x0, y0, z0);
