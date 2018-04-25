@@ -70,12 +70,11 @@ def scanline_convert(polygons, i, screen, zbuffer ):
             x1 += d0
             if (y == ym):
                 x1 = xm
+            #print "x0:  " + str(x0)
+            #print "x1 " + str(x1)
 
-            draw_line(x0, y, 0, x1, y, 0, screen, zbuffer, color)
+            #draw_line(x0, y, 0, x1, y, 0, screen, zbuffer, color)
             y += 1
-        # update x and z
-        # draw_line(x1, yb, yz, screen, zbuffer, color)
-        # draw_line =
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(polygons, x0, y0, z0);
@@ -117,8 +116,6 @@ def draw_polygons( matrix, screen, zbuffer, color ):
             scanline_convert(matrix, point, screen, zbuffer)
         point += 3
 
-
-
 def add_box( polygons, x, y, z, width, height, depth ):
     x1 = x + width
     y1 = y - height
@@ -135,6 +132,7 @@ def add_box( polygons, x, y, z, width, height, depth ):
     #right side
     add_polygon(polygons, x1, y, z, x1, y1, z1, x1, y, z1);
     add_polygon(polygons, x1, y, z, x1, y1, z, x1, y1, z1);
+    
     #left side
     add_polygon(polygons, x, y, z1, x, y1, z, x, y, z);
     add_polygon(polygons, x, y, z1, x, y1, z1, x, y1, z);
@@ -142,6 +140,7 @@ def add_box( polygons, x, y, z, width, height, depth ):
     #top
     add_polygon(polygons, x, y, z1, x1, y, z, x1, y, z1);
     add_polygon(polygons, x, y, z1, x, y, z, x1, y, z);
+    
     #bottom
     add_polygon(polygons, x, y1, z, x1, y1, z1, x1, y1, z);
     add_polygon(polygons, x, y1, z, x, y1, z1, x1, y1, z1);
@@ -371,7 +370,7 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color ):
             loop_end = y
 
     while ( loop_start < loop_end ):
-        plot( screen, zbuffer, color, x, y, 0 )
+        plot( screen, zbuffer, color, int(x), int(y), 0 )
         if ( (wide and ((A > 0 and d > 0) or (A < 0 and d < 0))) or
              (tall and ((A > 0 and d < 0) or (A < 0 and d > 0 )))):
 
@@ -383,4 +382,4 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color ):
             y+= dy_east
             d+= d_east
         loop_start+= 1
-    plot( screen, zbuffer, color, x, y, 0 )
+    plot( screen, zbuffer, color, int(x), int(y), 0 )
