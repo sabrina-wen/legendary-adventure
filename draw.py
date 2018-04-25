@@ -2,10 +2,12 @@ from display import *
 from matrix import *
 from math import *
 from gmath import *
+import random
 
 def scanline_convert(polygons, i, screen, zbuffer ):
     print polygons[0]
     for i in polygons:
+        color = [0, 0, 0]
         # calculate rand color
         color[0] = random.randint(0, 255)
         color[1] = random.randint(0, 255)
@@ -58,16 +60,19 @@ def scanline_convert(polygons, i, screen, zbuffer ):
             xt = tempx
             yt = tempy
             zt = tempz
-        
+
         # calculate slopes
-        if (xm - xb == 0):
-            d0 = float(xt - xb) / float(yt - yb)
+        d0 = (xt - xb) / (yt - yb)
         y = yb
         x0 = xb
         x1 = xt
-        while (y < yt:
+        while (y < yt):
+            x1 += d0
+            if (y == ym):
+                x1 = xm
+
+            draw_line(x0, y, 0, x1, y, 0, screen, zbuffer, color)
             y += 1
-            x0 += d0
         # update x and z
         # draw_line(x1, yb, yz, screen, zbuffer, color)
         # draw_line =
@@ -109,8 +114,9 @@ def draw_polygons( matrix, screen, zbuffer, color ):
                        int(matrix[point+2][1]),
                        matrix[point+2][2],
                        screen, zbuffer, color)
-        point+= 3
-        scanline_convert(matrix, i, screen, zbuffer)
+            scanline_convert(matrix, point, screen, zbuffer)
+        point += 3
+
 
 
 def add_box( polygons, x, y, z, width, height, depth ):
