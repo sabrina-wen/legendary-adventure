@@ -5,76 +5,98 @@ from gmath import *
 import random
 
 def scanline_convert(polygons, i, screen, zbuffer ):
-    print polygons[0]
-    for i in polygons:
-        color = [0, 0, 0]
-        # calculate rand color
-        color[0] = random.randint(0, 255)
-        color[1] = random.randint(0, 255)
-        color[2] = random.randint(0, 255)
+    #print polygons[0]
+    color = [0, 0, 0]
+    # calculate rand color
+    color[0] = random.randint(0, 255)
+    color[1] = random.randint(0, 255)
+    color[2] = random.randint(0, 255)
 
-        # define points
-        # bottom
-        xb = polygons[0][0]
-        yb = polygons[0][1]
-        zb = polygons[0][2]
+    # define points
+    # bottom
+    xb = polygons[i][0]
+    yb = polygons[i][1]
+    zb = polygons[i][2]
 
-        # middle
-        xm = polygons[1][0]
-        ym = polygons[1][1]
-        zm = polygons[1][2]
+    # middle
+    xm = polygons[i+1][0]
+    ym = polygons[i+1][1]
+    zm = polygons[i+1][2]
 
-        # top
-        xt = polygons[2][0]
-        yt = polygons[2][1]
-        zt = polygons[2][2]
+    # top
+    xt = polygons[i+2][0]
+    yt = polygons[i+2][1]
+    zt = polygons[i+2][2]
 
-        # order coordinates from bottom to top
-        if (yb > yt):
-            tempx = xb
-            tempy = yb
-            tempz = zb
-            xb = xt
-            yb = yt
-            zb = zt
-            xt = tempx
-            yt = tempy
-            zt = tempz
-        if (yb > ym):
-            tempx = xb
-            tempy = yb
-            tempz = zb
-            xb = xm
-            yb = ym
-            zb = zm
-            xm = tempx
-            ym = tempy
-            zm = tempz
-        if (ym > yt):
-            tempx = xm
-            tempy = ym
-            tempz = zm
-            xm = xt
-            ym = yt
-            zm = zt
-            xt = tempx
-            yt = tempy
-            zt = tempz
+    # order coordinates from bottom to top
+    if (yb > yt):
+        tempx = xb
+        tempy = yb
+        tempz = zb
+        xb = xt
+        yb = yt
+        zb = zt
+        xt = tempx
+        yt = tempy
+        zt = tempz
+    if (yb > ym):
+        tempx = xb
+        tempy = yb
+        tempz = zb
+        xb = xm
+        yb = ym
+        zb = zm
+        xm = tempx
+        ym = tempy
+        zm = tempz
+    if (ym > yt):
+        tempx = xm
+        tempy = ym
+        tempz = zm
+        xm = xt
+        ym = yt
+        zm = zt
+        xt = tempx
+        yt = tempy
+        zt = tempz
 
-        # calculate slopes
-        d0 = (xt - xb) / (yt - yb)
-        y = yb
-        x0 = xb
-        x1 = xt
-        while (y < yt):
-            x1 += d0
-            if (y == ym):
-                x1 = xm
-            #print "x0:  " + str(x0)
-            #print "x1 " + str(x1)
+    # calculate slopes
+    if (yt - yb != 0):
+        dx0 = (xt - xb) / (yt - yb)
+        dz0 = (zt - zb) / (yt - yb)
+    if (ym - yb != 0):
+        dx1 = (xm - xb) / (ym - yb)
+        dz1 = (zm - zb) / (ym - yb)
+    if (yt - ym != 0):
+        dx2 = (xt - xm) / (yt - ym)
+        dz2 = (zt - zm) / (yt - ym)
 
-            #draw_line(x0, y, 0, x1, y, 0, screen, zbuffer, color)
-            y += 1
+    # set coordinates and draw
+    y = yb
+    x0 = xb
+    x1 = xb
+    z0 = zb
+    z1 = zb
+
+    while (y < ym):
+        y += 1
+        draw_line(x0, y, z0, x1, y, z1, screen, zbuffer, color)
+        x0 += dx0
+        z0 += dz0
+        x1 += dx1
+        z1 += dz1
+
+    x1 = xm
+    z1 = zm
+    y = ym
+
+    while (y < yt):
+        y += 1
+        draw_line(x0, y, z0, x1, y, z1, screen, zbuffer, color)
+        x0 += dx0
+        z0 += dz0
+        x1 += dx2
+        z1 += dx2
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(polygons, x0, y0, z0);
@@ -92,7 +114,7 @@ def draw_polygons( matrix, screen, zbuffer, color ):
         normal = calculate_normal(matrix, point)[:]
 
         if normal[2] > 0:
-            draw_line( int(matrix[point][0]),
+            '''draw_line( int(matrix[point][0]),
                        int(matrix[point][1]),
                        matrix[point][2],
                        int(matrix[point+1][0]),
@@ -112,7 +134,7 @@ def draw_polygons( matrix, screen, zbuffer, color ):
                        int(matrix[point+2][0]),
                        int(matrix[point+2][1]),
                        matrix[point+2][2],
-                       screen, zbuffer, color)
+                       screen, zbuffer, color)'''
             scanline_convert(matrix, point, screen, zbuffer)
         point += 3
 
@@ -132,7 +154,7 @@ def add_box( polygons, x, y, z, width, height, depth ):
     #right side
     add_polygon(polygons, x1, y, z, x1, y1, z1, x1, y, z1);
     add_polygon(polygons, x1, y, z, x1, y1, z, x1, y1, z1);
-    
+
     #left side
     add_polygon(polygons, x, y, z1, x, y1, z, x, y, z);
     add_polygon(polygons, x, y, z1, x, y1, z1, x, y1, z);
@@ -140,7 +162,7 @@ def add_box( polygons, x, y, z, width, height, depth ):
     #top
     add_polygon(polygons, x, y, z1, x1, y, z, x1, y, z1);
     add_polygon(polygons, x, y, z1, x, y, z, x1, y, z);
-    
+
     #bottom
     add_polygon(polygons, x, y1, z, x1, y1, z1, x1, y1, z);
     add_polygon(polygons, x, y1, z, x, y1, z1, x1, y1, z1);
